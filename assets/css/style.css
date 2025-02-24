@@ -1,0 +1,177 @@
+#gradient-box {
+    width: 100%; /* Full width of the screen */
+    height: 75vh; /* 3/4 of the screen height */
+    background: radial-gradient(circle, midnightblue 20%, black 80%);
+    display: flex; /* Enables content alignment if needed */
+    justify-content: center; /* Centers any content horizontally */
+    align-items: center; /* Centers any content vertically */
+    position: relative; /* Ensure the gradient box is the reference for absolute positioning */
+    overflow: hidden; /* Hide overflow to ensure the pseudo-element is contained */
+    transition: background 1.5s ease; /* Smooth and slower transition for background */
+}
+
+#gradient-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgb(223, 178, 0) 20%, darkred 80%);
+    opacity: 0;
+    transition: opacity 1.5s ease; /* Smooth and slower transition for opacity */
+    z-index: 0; /* Ensure the pseudo-element is behind the content */
+}
+
+#gradient-box.hovered::before {
+    opacity: 1;
+}
+
+#circle {
+    position: relative;
+    z-index: 1; /* Ensure the circle is above the pseudo-element */
+    width: 350px; /* Diameter of the circle */
+    height: 350px; /* Diameter of the circle */
+    background-color: white; /* Circle's color */
+    border-radius: 50%; /* Makes it a perfect circle */
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); /* Faint glow effect */
+    transition: box-shadow 0.3s ease, background-color 0.5s ease; /* Smooth transition for box-shadow and background-color */
+    display: flex; /* Enables content alignment if needed */
+    justify-content: center; /* Centers any content horizontally */
+    align-items: center; /* Centers any content vertically */
+}
+
+#circle.hover {
+    box-shadow: 0 0 60px rgba(255, 255, 255, 1); /* Brighter glow */
+}
+
+#circle.hovered {
+    box-shadow: 0 0 120px rgba(255, 255, 255, 1); /* Brighter glow */
+}
+
+#circle h1 {
+    cursor: pointer;
+}
+
+.star {
+    position: absolute;
+    background-color: white; /* Star color */
+    border-radius: 50%; /* Makes it circular */
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.8); /* Slight glow effect */
+    transition: transform 1s ease, filter 0.5s ease, background-color 0.5s ease, opacity 1s ease; /* Smooth transition for transform, filter, background-color, and opacity */
+}
+
+@keyframes springyHover {
+    0% {
+        transform: scale(1);
+    }
+    40% {
+        transform: scale(1.2);
+    }
+    60% {
+        transform: scale(0.9);
+    }
+    80% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.star.springy {
+    animation: springyHover 0.5s ease-out;
+}
+
+.transparent {
+    opacity: 0.5; /* Adjust the opacity as needed */
+    transition: opacity 1s ease; /* Smooth transition for opacity */
+}
+
+#static-stars-container {
+    transition: opacity 1s ease; /* Smooth opacity transition for fading in and out */
+}
+
+#static-stars-container.transparent {
+    opacity: 0.5; /* Faded opacity */
+}
+
+.faded {
+    opacity: 0.15;
+    transition: opacity 1s ease; /* Smooth transition for opacity */
+}
+
+#static-stars-container.faded {
+    opacity: 0.15; /* Faded opacity */
+}
+
+
+@keyframes moveTop {
+    0% {
+        transform: translateX(-100%);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes moveMiddle {
+    0% {
+        transform: translateX(-100%);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes moveBottom {
+    0% {
+        transform: translateX(-100%);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.cloud {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+#cloud1.animate {
+    animation: moveTop 15s linear infinite;
+    top: 0;
+    left: 0;
+}
+
+#cloud2.animate {
+    animation: moveTop 30s linear infinite 0.5s;
+    top: 0;
+    left: 0;
+}
+
+#cloud3.animate {
+    animation: moveMiddle 20s linear infinite 0.75s;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+
+#cloud4.animate {
+    animation: moveBottom 25s linear infinite 0.25s;
+    bottom: 0;
+    left: 0;
+}
+
+#cloud5.animate {
+    animation: moveBottom 35s linear infinite 0.75s;
+    bottom: 0;
+    left: 0;
+}
