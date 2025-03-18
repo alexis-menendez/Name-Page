@@ -1,18 +1,28 @@
-document.addEventListener('DOMContentLoaded', () => {
+// File path: module-12-crafted-by-alex/assets/js/starryskies.js
+
+// Wait for the entire document to be fully loaded before running the script
+  document.addEventListener('DOMContentLoaded', () => {
+  
+// Get references to the necessary DOM elements
   const starsContainer = document.getElementById('stars-container');
   const gradientBox = document.getElementById('gradient-box');
   const circle = document.getElementById('circle');
   const h1 = document.querySelector('#circle h1');
 
+// Get the dimensions of the gradient box
   const boxWidth = gradientBox.offsetWidth;
   const boxHeight = gradientBox.offsetHeight;
 
+// Set poistion for the moon
   const circleRect = circle.getBoundingClientRect();
   const circleX = circleRect.left + circleRect.width / 2;
   const circleY = circleRect.top + circleRect.height / 2;
 
+// Arrays to hold moving and static stars
   const movingStars = [];
   const staticStars = [];
+
+// Define different sizes and quantities of moving stars
   const movingStarSizes = [
     { size: 8, quantity: 1 },
     { size: 7, quantity: 2 },
@@ -23,6 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { size: 2, quantity: 150 },
     { size: 1, quantity: 250 }
   ];
+
+// Define different sizes and quantities of static stars
   const staticStarSizes = [
     { size: 8, quantity: 0 },
     { size: 7, quantity: 0 },
@@ -34,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { size: 1, quantity: 250 }
   ];
 
+// Define pattern for "Great Bird" constellation
   const greatbird = [
     // Head, Body, Tail
       { x: 0.8, y: 0.6, size: 7 },   // Great Bird Star 1
@@ -64,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   ];
 
+// Define pattern for "Libra" constellation
   const libra = [
     { x: 0.023, y: 0.48, size: 2 },     // Libra Star 1
     { x: 0.040, y: 0.46, size: 2 },     // Libra Star 2
@@ -75,17 +89,23 @@ document.addEventListener('DOMContentLoaded', () => {
     { x: 0.043, y: 0.74, size: 2 },     // Libra Star 8
   ];
 
+/** Checks if a new star would overlap with an existing star or the moon.
+  * @param {number} x - The x-coordinate of the star
+  * @param {number} y - The y-coordinate of the star
+  * @param {number} starSize - The size of the star
+  * @returns {boolean} - Returns true if overlap is detected */
+
+  // Checks if a new star would overlap with the moon
   function doesOverlap(x, y, starSize) {
-    // Check against the circle
     const distanceFromCircle = Math.sqrt(
       Math.pow(x - circleX, 2) +
       Math.pow(y - circleY, 2)
     );
     if (distanceFromCircle < circleRect.width / 2 + starSize) {
-      return true; // Overlaps with the circle
+      return true; // Overlaps with the moon
     }
 
-    // Check against other stars
+  // Checks if a new star would overlap with other stars
     for (const star of movingStars.concat(staticStars)) {
       const distanceFromStar = Math.sqrt(
         Math.pow(x - star.x, 2) +
@@ -99,6 +119,12 @@ document.addEventListener('DOMContentLoaded', () => {
     return false; // No overlap
   }
 
+/** Creates stars and adds them to the given container.
+  * @param {Array} starSizes - An array of objects containing star sizes and quantities
+  * @param {Array} starArray - An array to store the created stars
+  * @param {HTMLElement} container - The HTML container where stars will be added */
+
+  // Creates stars and adds them to the given container
   function createStars(starSizes, starArray, container) {
     starSizes.forEach(({ size, quantity }) => {
       for (let i = 0; i < quantity; i++) {
@@ -107,21 +133,23 @@ document.addEventListener('DOMContentLoaded', () => {
         let attempts = 0;
         const maxAttempts = 1000; // Avoid infinite loops
 
+  // Randomly position stars, ensuring they do not overlap
         do {
           x = Math.random() * boxWidth;
           y = Math.random() * boxHeight;
           attempts++;
         } while (doesOverlap(x, y, size) && attempts < maxAttempts);
-
+  
+  // Stop placing stars if max attempts are reached
         if (attempts === maxAttempts) {
           console.warn(`Could only place ${movingStars.length + staticStars.length} stars out of ${quantity}`);
-          break; // Stop placing stars if max attempts are reached
+          break; 
         }
 
         const star = { x, y, size };
         starArray.push(star);
 
-        // Create and style the star
+  // Create and style the star as a div element
         const starElement = document.createElement('div');
         starElement.classList.add('star');
         starElement.style.width = `${size}px`;
@@ -134,12 +162,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function createConstellation(stars, container, additionalLines = []) {
+/**
+  * Creates a constellation by placing stars in specific positions and drawing lines between them.
+  * @param {Array} stars - An array of objects containing x, y positions and sizes of stars
+  * @param {HTMLElement} container - The container where the stars will be added
+  * @param {Array} additionalLines - Optional array of line connections between stars */
+  
+  // Creates a constellation by placing stars in specific positions and drawing lines between them
+    function createConstellation(stars, container, additionalLines = []) {
     stars.forEach(({ x, y, size }) => {
       const star = { x: x * boxWidth, y: y * boxHeight, size };
       staticStars.push(star);
 
-      // Create and style the star
+  // Create and style the star
       const starElement = document.createElement('div');
       starElement.classList.add('star');
       starElement.style.width = `${size}px`;
@@ -150,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
       container.appendChild(starElement);
     });
 
-    // Draw lines between the stars
+  // Create a canvas element for drawing lines between the stars
     const canvas = document.createElement('canvas');
     canvas.width = boxWidth;
     canvas.height = boxHeight;
@@ -175,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     ctx.stroke();
 
-    // Draw additional lines
+  // Draw additional lines
     additionalLines.forEach(([startIndex, endIndex]) => {
       const startStar = stars[startIndex];
       const endStar = stars[endIndex];
@@ -186,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Create separate containers for moving and static stars
+// Create separate containers for moving and static stars
   const movingStarsContainer = document.createElement('div');
   const staticStarsContainer = document.createElement('div');
   movingStarsContainer.id = 'moving-stars-container';
@@ -194,12 +229,15 @@ document.addEventListener('DOMContentLoaded', () => {
   starsContainer.appendChild(movingStarsContainer);
   starsContainer.appendChild(staticStarsContainer);
 
+// Create and place both stars and constellations
   createStars(movingStarSizes, movingStars, movingStarsContainer);
   createStars(staticStarSizes, staticStars, staticStarsContainer);
   createConstellation(greatbird, staticStarsContainer);
   createConstellation(libra, staticStarsContainer, [[3, 5]]); // Add line between Libra star 4 and Libra star 6
 
+// Function to move stars to the center when hovering over the circle
   function moveStarsToCenter() {
+  // Defines which stars sizes to move and in what order
     const groups = [
       { sizes: [8, 1], delay: 0 },
       { sizes: [7, 2], delay: 5 },
@@ -207,11 +245,16 @@ document.addEventListener('DOMContentLoaded', () => {
       { sizes: [5, 4], delay: 15 }
     ];
 
+    // loops through each group and moves the stars
     groups.forEach(group => {
+      // loops through each star size in the current group
       group.sizes.forEach(size => {
+        // finds all stars that match the current size and stores them in starsToMove
         const starsToMove = movingStars.filter(star => star.size === size);
         starsToMove.forEach((star, index) => {
+          // retireves the HTML elemnt corresponding to the current star
           const starElement = movingStarsContainer.children[movingStars.indexOf(star)];
+          // delays movement of star based on the groups delay
           setTimeout(() => {
             starElement.style.transform = `translate(${circleX - star.x}px, ${circleY - star.y}px)`;
           }, group.delay + index * 10); // Adjust delay for staggered effect within the group
@@ -219,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Move size 1, size 2, and size 3 stars in groups of 3
+  // Move size 1, size 2, and size 3 stars in groups of 3
     [1, 2, 3].forEach(size => {
       const sizeStars = movingStars.filter(star => star.size === size);
       sizeStars.forEach((star, index) => {
@@ -231,6 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // retun stars to original position
   function resetStars() {
     const groups = [
       { sizes: [8, 1], delay: 0 },
@@ -249,21 +293,21 @@ document.addEventListener('DOMContentLoaded', () => {
           }, group.delay + index * 10); // Adjust delay for staggered effect within the group
         });
       });
-    });
+  });
 
-    // Move size 1, size 2, and size 3 stars in groups of 3
-    [1, 2, 3].forEach(size => {
-      const sizeStars = movingStars.filter(star => star.size === size).reverse();
-      sizeStars.forEach((star, index) => {
-        const starElement = movingStarsContainer.children[movingStars.indexOf(star)];
-        setTimeout(() => {
+  // Move size 1, size 2, and size 3 stars in groups of 3
+  [1, 2, 3].forEach(size => {
+    const sizeStars = movingStars.filter(star => star.size === size).reverse();
+    sizeStars.forEach((star, index) => {
+    const starElement = movingStarsContainer.children[movingStars.indexOf(star)];
+    setTimeout(() => {
           starElement.style.transform = 'translate(0, 0)';
-        }, Math.floor(index / 3) * 10); // Move 3 stars at a time
-      });
+    }, Math.floor(index / 3) * 10); // Move 3 stars at a time
     });
-  }
+  });
+}
 
-  circle.addEventListener('mouseenter', () => {
+circle.addEventListener('mouseenter', () => {
     moveStarsToCenter();
     circle.classList.add('hover');
     staticStarsContainer.classList.add('transparent'); // Add this line
@@ -332,24 +376,24 @@ gradientBox.addEventListener('mousemove', (event) => {
   movingStars.forEach((star, index) => {
     const starElement = movingStarsContainer.children[index];
 
-    // Calculate the distance from the mouse to the star
+  // Calculate the distance from the mouse to the star
     const distanceX = mouseX - star.x;
     const distanceY = mouseY - star.y;
     const distance = Math.sqrt(distanceX ** 2 + distanceY ** 2);
 
-    // Only move stars within a certain radius (e.g., 150px)
+  // Only move stars within a certain radius (e.g., 150px)
     const maxDistance = 150;
     if (distance < maxDistance) {
       const effectStrength = 1 - distance / maxDistance; // Closer stars move more
 
-      // Calculate the offset with diminishing intensity based on distance
+  // Calculate the offset with diminishing intensity based on distance
       const offsetX = (distanceX / .25) * effectStrength; // Adjust divisor for "springiness"
       const offsetY = (distanceY / .25) * effectStrength;
 
-      // Apply the transform
+  // Apply the transform
       starElement.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${1 + 0.1 * effectStrength})`;
     } else {
-      // Reset stars outside the interaction radius
+  // Reset stars outside the interaction radius
       starElement.style.transform = 'translate(0, 0) scale(1)';
     }
   });
